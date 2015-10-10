@@ -1,0 +1,241 @@
+package com.company;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.net.URL;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.JFileChooser;
+import java.util.List;
+
+/**
+ * Created by Admin on 04.10.2015.
+ */
+public class DartLoader extends JFrame {
+    private JPanel mainForm;
+    private JButton directorySelect;
+    private JTextField usrName;
+    private JTextField galleryLinkField;
+    private JTextArea inputInfoTextArea;
+    private JPasswordField usrPassword;
+    private JTextArea trueLog;
+    private JTextArea imgName;
+    private JButton startDownload;
+    private JProgressBar progressBar;
+    private JTextArea galleryFoldersInfo;
+    private JScrollPane scrollPane;
+    private JLabel gLink;
+    private JLabel uName;
+    private JLabel uPassword;
+    private JLabel gFoldersInfo;
+
+    JFileChooser chooser = new JFileChooser();
+
+
+    public DartLoader() throws IOException{
+        super("DartLoader alpha 0.1.2");
+        setContentPane(mainForm);
+        mainForm.setBackground(Color.CYAN);
+        pack();
+
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+        setVisible(true);
+
+        directorySelect.addActionListener(e -> {
+            try {
+                SaveFolderChoose();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        startDownload.addActionListener(e -> {
+                LogIn();
+        });
+    }
+
+
+
+    public void SaveFolderChoose() throws IOException {
+
+        //Save Folder Choose
+
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("choosertitle");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
+        } else System.out.println("No Selection ");
+        trueLog.setText("Selected Directory: " + "\n" + chooser.getSelectedFile());
+        startDownload.setEnabled(true);
+
+
+    }
+    public void LogIn(){
+        SwingWorker<Boolean, Integer> worker = new SwingWorker<Boolean, Integer>() {
+
+            @Override
+            protected Boolean doInBackground() throws Exception {
+
+
+                float FinalOffset = 0;
+                boolean doneCheck = false;
+                boolean loggedIn = false;
+
+                Connection.Response resp = Jsoup.connect("https://www.deviantart.com/users/login")
+                        .timeout(10 * 1000)
+                        .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0")
+                        .execute();
+                Document doc1 = resp.parse();
+                progressBar.setValue(30);
+                Element eltoken = doc1.getElementsByAttributeValueContaining("name", "validate_token").first();
+                Element elkey = doc1.getElementsByAttributeValueContaining("name", "validate_key").first();
+                String token = eltoken.attr("value");
+                String key = elkey.attr("value");
+
+                inputInfoTextArea.setText("SiteToken: " + token + "\n" + "SiteKey: " + key + "\n");
+                progressBar.setValue(50);
+                Map<String, String> cookies1 = resp.cookies();
+                String strPassword = new String(usrPassword.getPassword());
+                Connection.Response res = Jsoup
+                        .connect("https://www.deviantart.com/users/login")
+                        .cookies(cookies1)
+                        .data("validate_token", token)
+                        .data("validate_key", key)
+                        .data("username", usrName.getText())
+                        .data("password",  strPassword)
+                        .data("remember_me", "0")
+                        .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0")
+                        .method(Connection.Method.POST)
+                        .execute();
+                Map<String, String> cookies = res.cookies();
+                progressBar.setValue(70);
+                Document doc = Jsoup.connect("https://www.deviantart.com/settings/identity").cookies(cookies).get();
+                if (doc.getElementById("signature") == null) {
+                    progressBar.setValue(100);
+                    trueLog.setForeground(Color.red);
+                    trueLog.setText("Error");
+                } else if (doc.getElementById("signature").hasAttr("id")) {
+                    progressBar.setValue(100);
+                    trueLog.setForeground(Color.green);
+                    trueLog.setText("Logged In");
+                    loggedIn = true;
+                }
+                String line =  galleryLinkField.getText();
+
+                if (loggedIn) {
+                    if (line.contains("http://") && line.contains(".deviantart.com") && line.contains("/gallery/")) {
+                        try {
+                            //Gallery Size Scan
+                            System.out.println(line);
+                            Document gallerySize = Jsoup.connect(line).cookies(cookies).get();
+                            Elements galleryFolders = gallerySize.select("div[class=label]").select("a[href*=/gallery/]");
+                            //Gallery Include Folders
+                            for (Element elOff : galleryFolders) {
+                                System.out.println("pageFolders : " + elOff.attr("abs:href"));
+                                galleryFoldersInfo.setForeground(Color.green);
+                                galleryFoldersInfo.append(elOff.attr("abs:href") + "\n");
+                            }
+
+
+                            Elements offSet = gallerySize.select("a[gmi-offset]");
+                            for (Element elOff : offSet) {
+                                String pageOffsets = elOff.attr("data-offset");
+                                if (FinalOffset < Float.parseFloat(pageOffsets)) {
+                                    FinalOffset = Float.parseFloat(pageOffsets);
+                                }
+                                System.out.println("data-offset : " + pageOffsets);
+                            }
+                            for (int y = 0; y < (FinalOffset / 24) + 1; y++) {
+                                progressBar.setValue(0);
+                                Document docGallery = Jsoup.connect(line + "?offset=" + 24 * y).cookies(cookies).get();
+
+                                Elements img = docGallery.select("a[data-super-img~=(?i)\\.(png|jpe?g|gif)], a[data-super-full-img~=(?i)\\.(png|jpe?g|gif)]");
+
+                                for (Element el : img) {
+                                    String src = el.absUrl("data-super-img");
+                                    String srcFull = el.absUrl("data-super-full-img"); //Check Full size IMG
+                                    if (srcFull == "") {
+                                        srcFull = src;
+                                    }
+
+                                    System.out.println("Image Found!");
+                                    doneCheck = true;
+                                    System.out.println("Preview Img : " + src);
+                                    System.out.println("Full Img : " + srcFull);
+                                    progressBar.setValue(50);
+                                    int indexname = srcFull.lastIndexOf("/");
+                                    if (indexname == srcFull.length()) {
+                                        srcFull = srcFull.substring(1, indexname);
+                                    }
+                                    String name = srcFull.substring(indexname, srcFull.length());
+                                    imgName.setText(name + "\n");
+                                    System.out.println("--------------------------");
+                                    try {
+                                        URL url = new URL(srcFull);
+                                        InputStream in = url.openStream();
+                                        OutputStream out = new BufferedOutputStream(new FileOutputStream(chooser.getSelectedFile() + name));
+                                        for (int i; (i = in.read()) != -1; ) {
+                                            out.write(i);
+                                            progressBar.setValue(100);
+                                        }
+                                        out.close();
+                                        in.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        } catch (IOException ex) {
+
+                            System.err.println("There was an error");
+                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        trueLog.setForeground(Color.red);
+                        trueLog.setText("Please Enter Correct Gallery Link!" + "\n" + "For Example: http://tophwei.deviantart.com/gallery/31938578/Me");
+                    }
+                } else {
+                    trueLog.setForeground(Color.red);
+                    trueLog.setText("Login Error" + "\n" + "Please check your input data and Try Again");
+                }
+                if(doneCheck) {
+                    trueLog.setForeground(Color.green);
+                    trueLog.setText("Done");
+                }
+
+                return false;
+            }
+            @Override
+            // This will be called if you call publish() from doInBackground()
+            // Can safely update the GUI here.
+            protected void process(List<Integer> chunks) {
+
+            }
+            @Override
+            // This is called when the thread finishes.
+            // Can safely update GUI here.
+            protected void done() {
+
+            }
+        };
+        worker.execute();
+    }
+}
+
+
+
+
