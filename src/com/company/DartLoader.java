@@ -9,7 +9,9 @@ import org.jsoup.select.Elements;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +20,7 @@ import javax.swing.JFileChooser;
 import java.util.List;
 
 /**
- * Created by Admin on 04.10.2015.
+ * Created by Admin on 28.10.2015.
  */
 public class DartLoader extends JFrame {
     private JPanel mainForm;
@@ -37,12 +39,13 @@ public class DartLoader extends JFrame {
     private JLabel uName;
     private JLabel uPassword;
     private JLabel gFoldersInfo;
+    private JLabel Animation;
 
     JFileChooser chooser = new JFileChooser();
 
 
     public DartLoader() throws IOException{
-        super("DartLoader alpha 0.1.2");
+        super("DartLoader alpha 0.1.3");
         setContentPane(mainForm);
         mainForm.setBackground(Color.CYAN);
         pack();
@@ -59,9 +62,7 @@ public class DartLoader extends JFrame {
                 e1.printStackTrace();
             }
         });
-        startDownload.addActionListener(e -> {
-                LogIn();
-        });
+        startDownload.addActionListener(e -> LogIn());
     }
 
 
@@ -79,11 +80,18 @@ public class DartLoader extends JFrame {
             System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
             System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
         } else System.out.println("No Selection ");
-        trueLog.setText("Selected Directory: " + "\n" + chooser.getSelectedFile());
-        startDownload.setEnabled(true);
+            trueLog.setForeground(Color.green);
+            trueLog.setText("Selected Directory: " + "\n" + chooser.getSelectedFile());
+        if(chooser.getSelectedFile() != null){
+            startDownload.setEnabled(true);
+        }else{
+            trueLog.setForeground(Color.red);
+            trueLog.setText("Selected Directory: Not Correct." + "\n" + "Please choose some active save Folder.");
+    }
 
 
     }
+
     public void LogIn(){
         SwingWorker<Boolean, Integer> worker = new SwingWorker<Boolean, Integer>() {
 
@@ -94,7 +102,15 @@ public class DartLoader extends JFrame {
                 float FinalOffset = 0;
                 boolean doneCheck = false;
                 boolean loggedIn = false;
-
+                //Internet Connection CHeck
+                try {
+                    URL url = new URL("http://www.google.com");
+                    HttpURLConnection urlConnect = (HttpURLConnection) url.openConnection();
+                    Object objData = urlConnect.getContent();
+                } catch (IOException e) {
+                    trueLog.setForeground(Color.red);
+                    trueLog.setText("Check your Internet Connection");
+                }
                 Connection.Response resp = Jsoup.connect("https://www.deviantart.com/users/login")
                         .timeout(10 * 1000)
                         .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0")
@@ -223,6 +239,10 @@ public class DartLoader extends JFrame {
             // This will be called if you call publish() from doInBackground()
             // Can safely update the GUI here.
             protected void process(List<Integer> chunks) {
+
+
+
+
 
             }
             @Override

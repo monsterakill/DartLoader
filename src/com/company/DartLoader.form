@@ -160,6 +160,23 @@
           <text value="Galery Link :"/>
         </properties>
       </component>
+      <component id="4a7f7" class="javax.swing.JLabel" binding="Animation">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <enabled value="true"/>
+          <horizontalAlignment value="11"/>
+          <horizontalTextPosition value="11"/>
+          <icon value="loadera64.gif"/>
+          <iconTextGap value="4"/>
+          <opaque value="false"/>
+          <requestFocusEnabled value="true"/>
+          <text value=""/>
+          <verifyInputWhenFocusTarget value="true"/>
+          <visible value="true"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>
