@@ -45,7 +45,7 @@ public class DartLoader extends JFrame {
 
 
     public DartLoader() throws IOException{
-        super("DartLoader alpha 0.1.3");
+        super("DartLoader alpha 0.1.4");
         setContentPane(mainForm);
         mainForm.setBackground(Color.CYAN);
         pack();
@@ -179,7 +179,7 @@ public class DartLoader extends JFrame {
                             }
                             for (int y = 0; y < (FinalOffset / 24) + 1; y++) {
                                 Document docGallery = Jsoup.connect(line + "?offset=" + 24 * y).cookies(cookies).get();
-                                //Remove Gallery Folders 
+                                //Remove Gallery Folders
                                 for (Element element : docGallery.select("div.gr-body")) {
                                     element.remove();
                                 }
