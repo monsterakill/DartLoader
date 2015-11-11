@@ -104,12 +104,14 @@ public class DartLoader extends JFrame {
                 boolean loggedIn = false;
                 //Internet Connection CHeck
                 try {
+                    Animation.setVisible(true);
                     URL url = new URL("http://www.google.com");
                     HttpURLConnection urlConnect = (HttpURLConnection) url.openConnection();
                     Object objData = urlConnect.getContent();
                 } catch (IOException e) {
                     trueLog.setForeground(Color.red);
                     trueLog.setText("Check your Internet Connection");
+                    Animation.setVisible(false);
                 }
                 Connection.Response resp = Jsoup.connect("https://www.deviantart.com/users/login")
                         .timeout(10 * 1000)
@@ -153,7 +155,7 @@ public class DartLoader extends JFrame {
                 String line =  galleryLinkField.getText();
 
                 if (loggedIn) {
-                    if (line.contains("http://") && line.contains(".deviantart.com") && line.contains("/gallery/")) {
+                    if (line.contains("http://") && line.contains(".deviantart.com") && line.contains("/gallery/"))
                         try {
                             //Gallery Size Scan
                             System.out.println(line);
@@ -176,12 +178,16 @@ public class DartLoader extends JFrame {
                                 System.out.println("data-offset : " + pageOffsets);
                             }
                             for (int y = 0; y < (FinalOffset / 24) + 1; y++) {
-                                progressBar.setValue(0);
                                 Document docGallery = Jsoup.connect(line + "?offset=" + 24 * y).cookies(cookies).get();
+                                //Remove Gallery Folders 
+                                for (Element element : docGallery.select("div.gr-body")) {
+                                    element.remove();
+                                }
 
                                 Elements img = docGallery.select("a[data-super-img~=(?i)\\.(png|jpe?g|gif)], a[data-super-full-img~=(?i)\\.(png|jpe?g|gif)]");
 
                                 for (Element el : img) {
+
                                     String src = el.absUrl("data-super-img");
                                     String srcFull = el.absUrl("data-super-full-img"); //Check Full size IMG
                                     if (srcFull == "") {
@@ -192,7 +198,6 @@ public class DartLoader extends JFrame {
                                     doneCheck = true;
                                     System.out.println("Preview Img : " + src);
                                     System.out.println("Full Img : " + srcFull);
-                                    progressBar.setValue(50);
                                     int indexname = srcFull.lastIndexOf("/");
                                     if (indexname == srcFull.length()) {
                                         srcFull = srcFull.substring(1, indexname);
@@ -206,8 +211,9 @@ public class DartLoader extends JFrame {
                                         OutputStream out = new BufferedOutputStream(new FileOutputStream(chooser.getSelectedFile() + name));
                                         for (int i; (i = in.read()) != -1; ) {
                                             out.write(i);
-                                            progressBar.setValue(100);
+                                            progressBar.setValue(i++);
                                         }
+                                        //progressBar.setValue(in.read());
                                         out.close();
                                         in.close();
                                     } catch (IOException e) {
@@ -220,7 +226,7 @@ public class DartLoader extends JFrame {
                             System.err.println("There was an error");
                             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } else {
+                    else {
                         trueLog.setForeground(Color.red);
                         trueLog.setText("Please Enter Correct Gallery Link!" + "\n" + "For Example: http://tophwei.deviantart.com/gallery/31938578/Me");
                     }
