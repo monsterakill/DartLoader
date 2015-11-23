@@ -208,7 +208,7 @@
           <requestFocusEnabled value="true"/>
           <text value=""/>
           <verifyInputWhenFocusTarget value="true"/>
-          <visible value="false"/>
+          <visible value="true"/>
         </properties>
       </component>
     </children>
