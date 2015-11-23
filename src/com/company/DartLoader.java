@@ -8,6 +8,8 @@ import org.jsoup.select.Elements;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -17,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
+import javax.swing.text.DefaultEditorKit;
 import java.util.List;
 
 /**
@@ -45,15 +48,19 @@ public class DartLoader extends JFrame {
 
 
     public DartLoader() throws IOException{
-        super("DartLoader alpha 0.1.4");
+        super("DartLoader alpha 0.1.5");
         setContentPane(mainForm);
-        mainForm.setBackground(Color.CYAN);
         pack();
-
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
+
+        //Set Background Img
+        setLayout(new BorderLayout());
+        JLabel background=new JLabel(new ImageIcon("C:\\Users\\Admin\\IdeaProjects\\Downloader\\src\\FFF.png"));
+        add(background);
+        background.setLayout(new FlowLayout());
 
         directorySelect.addActionListener(e -> {
             try {
@@ -66,11 +73,9 @@ public class DartLoader extends JFrame {
     }
 
 
-
     public void SaveFolderChoose() throws IOException {
 
         //Save Folder Choose
-
         chooser.setCurrentDirectory(new java.io.File("."));
         chooser.setDialogTitle("choosertitle");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -87,9 +92,7 @@ public class DartLoader extends JFrame {
         }else{
             trueLog.setForeground(Color.red);
             trueLog.setText("Selected Directory: Not Correct." + "\n" + "Please choose some active save Folder.");
-    }
-
-
+        }
     }
 
     public void LogIn(){
@@ -227,14 +230,17 @@ public class DartLoader extends JFrame {
                             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     else {
+                        Animation.setVisible(false);
                         trueLog.setForeground(Color.red);
                         trueLog.setText("Please Enter Correct Gallery Link!" + "\n" + "For Example: http://tophwei.deviantart.com/gallery/31938578/Me");
                     }
                 } else {
+                    Animation.setVisible(false);
                     trueLog.setForeground(Color.red);
                     trueLog.setText("Login Error" + "\n" + "Please check your input data and Try Again");
                 }
                 if(doneCheck) {
+                    Animation.setVisible(false);
                     trueLog.setForeground(Color.green);
                     trueLog.setText("Done");
                 }
