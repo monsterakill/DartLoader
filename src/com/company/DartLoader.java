@@ -48,7 +48,7 @@ public class DartLoader extends JFrame {
 
 
     public DartLoader() throws IOException{
-        super("DartLoader alpha 0.1.5");
+        super("DartLoader alpha 0.1.6");
         setContentPane(mainForm);
         pack();
 
