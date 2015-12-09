@@ -15,7 +15,7 @@ Some bug fixes like... <br />
 NOT ACTUAL version <br />
 <br />
 <br />
-<strong>DartLoader alpha 0.1.4<strong> <br />
+<strong>DartLoader alpha 0.1.4<strong /> <br />
 New version has avalible: <a href="https://mega.nz/#!W1MmGQQQ!y4lK_ZunR58fgus8Fb8yom6qQBJLrXW-Af6lj7HrUg4">HERE</a> <br />
 Fixed Bug with Gallery folders... <br />
 Now DartLoader download only choosen gallery, finally... <br />
