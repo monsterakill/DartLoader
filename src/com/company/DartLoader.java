@@ -52,15 +52,19 @@ public class DartLoader extends JFrame {
         setContentPane(mainForm);
         pack();
 
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
 
-        //Set Background Img
+        //Set Background Img && Background Animation FIX
         setLayout(new BorderLayout());
         JLabel background=new JLabel(new ImageIcon("C:\\Users\\Admin\\IdeaProjects\\Downloader\\src\\FFF.png"));
         add(background);
         background.setLayout(new FlowLayout());
+        Animation.setVisible(false);
+
+
 
         directorySelect.addActionListener(e -> {
             try {
@@ -103,6 +107,7 @@ public class DartLoader extends JFrame {
 
 
                 float FinalOffset = 0;
+                int currentntmAmount = 0;
                 boolean doneCheck = false;
                 boolean loggedIn = false;
                 //Internet Connection CHeck
@@ -122,6 +127,7 @@ public class DartLoader extends JFrame {
                         .execute();
                 Document doc1 = resp.parse();
                 progressBar.setValue(30);
+
                 Element eltoken = doc1.getElementsByAttributeValueContaining("name", "validate_token").first();
                 Element elkey = doc1.getElementsByAttributeValueContaining("name", "validate_key").first();
                 String token = eltoken.attr("value");
@@ -187,7 +193,20 @@ public class DartLoader extends JFrame {
                                     element.remove();
                                 }
 
+                                //Find images in HTML code
                                 Elements img = docGallery.select("a[data-super-img~=(?i)\\.(png|jpe?g|gif)], a[data-super-full-img~=(?i)\\.(png|jpe?g|gif)]");
+
+                                int ntmAmount = img.size(); //Number of images Found in current page
+
+                                //Actual Progress Bar
+                                //Not fully correct solution
+                                if(FinalOffset != 0){
+                                    int FinalOffestint = Math.round(FinalOffset);
+                                    ntmAmount = ((FinalOffestint / 24) + 2) * ntmAmount;
+                                    progressBar.setMaximum(ntmAmount);
+                                }else{
+                                    progressBar.setMaximum(ntmAmount);
+                                }
 
                                 for (Element el : img) {
 
@@ -205,18 +224,22 @@ public class DartLoader extends JFrame {
                                     if (indexname == srcFull.length()) {
                                         srcFull = srcFull.substring(1, indexname);
                                     }
+
                                     String name = srcFull.substring(indexname, srcFull.length());
                                     imgName.setText(name + "\n");
                                     System.out.println("--------------------------");
+
                                     try {
+
+                                        System.out.println(ntmAmount);
                                         URL url = new URL(srcFull);
                                         InputStream in = url.openStream();
                                         OutputStream out = new BufferedOutputStream(new FileOutputStream(chooser.getSelectedFile() + name));
                                         for (int i; (i = in.read()) != -1; ) {
                                             out.write(i);
-                                            progressBar.setValue(i++);
+
                                         }
-                                        //progressBar.setValue(in.read());
+                                        progressBar.setValue(currentntmAmount += 1);
                                         out.close();
                                         in.close();
                                     } catch (IOException e) {
@@ -243,6 +266,8 @@ public class DartLoader extends JFrame {
                     Animation.setVisible(false);
                     trueLog.setForeground(Color.green);
                     trueLog.setText("Done");
+                    //small progress bar fix
+                    progressBar.setValue(progressBar.getMaximum());
                 }
 
                 return false;
