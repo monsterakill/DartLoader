@@ -29,7 +29,11 @@ New version has avalible: <a href="https://mega.nz/#!j5tnzSBL!Xk4DvIPHK3E-GambPZ
 <br />
 <strong>DartLoader alpha 0.1.6</strong> <br />
 New version has avalible: <a href="https://mega.nz/#!ax9n3BYZ!mdZYcK4MPcMa6AaCK2RKWQOF5b7RYXW6ZM8-qI8KwjA">HERE</a> <br />
-1)From now correct Progress bar <br />
+1)From now, correct Progress bar <br />
+
+<strong>DartLoader alpha 0.2.0</strong> <br />
+New version has avalible: <a href="https://mega.nz/#!z10XFLYR!tmbxYDvb_BwxoBlES98hdcNdEdYrlgnAMQx-oWV-RKA">HERE</a> <br />
+1)Now images preview work correctly <br />
 
 
 
