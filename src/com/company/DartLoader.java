@@ -48,7 +48,7 @@ public class DartLoader extends JFrame {
 
 
     public DartLoader() throws IOException{
-        super("DartLoader alpha 0.1.6");
+        super("DartLoader alpha 0.2.0");
         setContentPane(mainForm);
         pack();
 
@@ -84,7 +84,7 @@ public class DartLoader extends JFrame {
         chooser.setDialogTitle("choosertitle");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);
-
+        //Direction Correct Check
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
             System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
@@ -110,7 +110,7 @@ public class DartLoader extends JFrame {
                 int currentntmAmount = 0;
                 boolean doneCheck = false;
                 boolean loggedIn = false;
-                //Internet Connection CHeck
+                //Small Internet Connection CHeck
                 try {
                     Animation.setVisible(true);
                     URL url = new URL("http://www.google.com");
@@ -127,12 +127,12 @@ public class DartLoader extends JFrame {
                         .execute();
                 Document doc1 = resp.parse();
                 progressBar.setValue(30);
-
+                //Take Request of Current Session Token and SiteKey
                 Element eltoken = doc1.getElementsByAttributeValueContaining("name", "validate_token").first();
                 Element elkey = doc1.getElementsByAttributeValueContaining("name", "validate_key").first();
                 String token = eltoken.attr("value");
                 String key = elkey.attr("value");
-
+                //Input Current Session Token and SiteKey
                 inputInfoTextArea.setText("SiteToken: " + token + "\n" + "SiteKey: " + key + "\n");
                 progressBar.setValue(50);
                 Map<String, String> cookies1 = resp.cookies();
@@ -150,6 +150,7 @@ public class DartLoader extends JFrame {
                         .execute();
                 Map<String, String> cookies = res.cookies();
                 progressBar.setValue(70);
+                //Check Account Settings Identity
                 Document doc = Jsoup.connect("https://www.deviantart.com/settings/identity").cookies(cookies).get();
                 if (doc.getElementById("signature") == null) {
                     progressBar.setValue(100);
@@ -177,7 +178,7 @@ public class DartLoader extends JFrame {
                                 galleryFoldersInfo.append(elOff.attr("abs:href") + "\n");
                             }
 
-
+                            //Take Page Offset
                             Elements offSet = gallerySize.select("a[gmi-offset]");
                             for (Element elOff : offSet) {
                                 String pageOffsets = elOff.attr("data-offset");
@@ -232,16 +233,27 @@ public class DartLoader extends JFrame {
                                     try {
 
                                         System.out.println(ntmAmount);
+                                        //Download Image from URL
                                         URL url = new URL(srcFull);
-                                        InputStream in = url.openStream();
-                                        OutputStream out = new BufferedOutputStream(new FileOutputStream(chooser.getSelectedFile() + name));
-                                        for (int i; (i = in.read()) != -1; ) {
-                                            out.write(i);
-
+                                        InputStream in = new BufferedInputStream(url.openStream());
+                                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                        byte[] buf = new byte[1024];
+                                        int n = 0;
+                                        while (-1!=(n=in.read(buf))) {
+                                            out.write(buf, 0, n);
                                         }
+                                        //Actual Progress bar Value
                                         progressBar.setValue(currentntmAmount += 1);
+
                                         out.close();
                                         in.close();
+                                        byte[] response = out.toByteArray();
+
+
+                                        // Save image to User Folder
+                                        FileOutputStream fos = new FileOutputStream(chooser.getSelectedFile() + name);
+                                        fos.write(response);
+                                        fos.close();
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
