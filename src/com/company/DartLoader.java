@@ -48,7 +48,7 @@ public class DartLoader extends JFrame {
 
 
     public DartLoader() throws IOException{
-        super("DartLoader alpha 0.2.0");
+        super("DartLoader alpha 0.2.1");
         setContentPane(mainForm);
         pack();
 
@@ -180,6 +180,7 @@ public class DartLoader extends JFrame {
 
                             //Take Page Offset
                             Elements offSet = gallerySize.select("a[gmi-offset]");
+                            System.out.println(offSet);
                             for (Element elOff : offSet) {
                                 String pageOffsets = elOff.attr("data-offset");
                                 if (FinalOffset < Float.parseFloat(pageOffsets)) {
@@ -195,8 +196,8 @@ public class DartLoader extends JFrame {
                                 }
 
                                 //Find images in HTML code
-                                Elements img = docGallery.select("a[data-super-img~=(?i)\\.(png|jpe?g|gif)], a[data-super-full-img~=(?i)\\.(png|jpe?g|gif)]");
-
+                                Elements img = docGallery.select("span[data-super-img~=(?i)\\.(png|jpe?g|gif)], span[data-super-full-img~=(?i)\\.(png|jpe?g|gif)]");
+                                System.out.println(img);
                                 int ntmAmount = img.size(); //Number of images Found in current page
 
                                 //Actual Progress Bar

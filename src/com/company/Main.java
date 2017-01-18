@@ -11,6 +11,7 @@ public class Main{
             @Override
             public void run() {
                 try {
+
                     new DartLoader();
                 } catch (IOException e) {
                     e.printStackTrace();
