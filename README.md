@@ -25,16 +25,24 @@ NOT ACTUAL version <br />
 New version has avalible: <a href="https://mega.nz/#!j5tnzSBL!Xk4DvIPHK3E-GambPZzfMbvKvybM7f6lKaSE655sjc0">HERE</a> <br />
 1)Added new Background<br />
 2)Animation Fixes...<br />
+NOT ACTUAL version <br />
 <br />
 <br />
 <strong>DartLoader alpha 0.1.6</strong> <br />
 New version has avalible: <a href="https://mega.nz/#!ax9n3BYZ!mdZYcK4MPcMa6AaCK2RKWQOF5b7RYXW6ZM8-qI8KwjA">HERE</a> <br />
 1)From now, correct Progress bar <br />
+NOT ACTUAL version <br />
 <br />
 <br />
 <strong>DartLoader alpha 0.2.0</strong> <br />
 New version has avalible: <a href="https://mega.nz/#!z10XFLYR!tmbxYDvb_BwxoBlES98hdcNdEdYrlgnAMQx-oWV-RKA">HERE</a> <br />
 1)Now images preview work correctly <br />
+NOT ACTUAL version <br />
+<br />
+<br />
+<strong>DartLoader alpha 0.2.1</strong> <br />
+New version has avalible: <a href="https://mega.nz/#!n4lCAKyL!284AsmOHHZM7X_e-mUH_ROgKR_pzVdWFDZhfORCwkhw">HERE</a> <br />
+1)DeviantArt new version Build <br />
 
 
 
